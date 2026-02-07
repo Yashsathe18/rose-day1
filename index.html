@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>For My Baby Girl 🌷</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Great+Vibes&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="bloom-bg"></div>
+
+  <!-- INTRO VIDEO OVERLAY -->
+  <div class="intro-overlay" id="introOverlay">
+    <video
+      class="intro-video"
+      id="introVideo"
+      src="assets/intro.mp4"
+      autoplay
+      muted
+      loop
+      playsinline
+    ></video>
+
+    <div class="intro-shade"></div>
+
+    <div class="intro-content">
+      <div class="intro-title">For You</div>
+      <div class="intro-sub">I made this little surprise… 🌸</div>
+      <button class="btn" id="beginBtn">Tap to Begin</button>
+      <div class="hint">Tip: turn volume on after you begin (optional)</div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main id="mainContent" class="hidden">
+
+    <section class="hero">
+      <h1>For the most beautiful soul</h1>
+      <p>
+        Some flowers bloom once a year,<br />
+        but you bloom in my life every single day.
+      </p>
+      <button class="btn soft" id="scrollBtn">Continue</button>
+    </section>
+
+    <!-- OPTIONAL VIDEO SECTION -->
+    <section class="video-section">
+      <h2 class="section-title">A little moment 💛</h2>
+      <div class="video-card">
+        <video class="memory-video" src="assets/memory1.mp4" controls playsinline></video>
+      </div>
+      <p class="caption">Every second with you feels like home.</p>
+    </section>
+
+    <!-- BOUQUET + SURPRISE -->
+    <section class="bouquet-section" id="bouquetSection">
+      <h2 class="section-title">One last thing…</h2>
+      <p class="caption">Close your eyes for a second… then open 👀</p>
+
+      <button class="btn" id="surpriseBtn">Reveal Surprise ✨</button>
+
+      <div class="surprise hidden" id="surpriseBox">
+        <img src="assets/bouquet.png" class="bouquet" alt="Luxury Bouquet">
+        <p class="flowers-text">
+          Not red roses —<br />
+          only **Lilies**, **Baby’s Breath**, and soft blooms…<br />
+          rich, elegant, and as beautiful as you.
+        </p>
+      </div>
+    </section>
+
+    <section class="final" id="finalSection">
+      <h2>Happy Rose Day</h2>
+      <h3>Baby Girl 🌸</h3>
+      <p>
+        No red roses today — only flowers as rare,<br />
+        elegant, and beautiful as you.
+      </p>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
