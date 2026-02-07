@@ -1,15 +1,18 @@
 // ====== EDIT THESE ======
-const HER_NAME = "Baby Girl"; // change this
+const HER_NAME = "Baby Girl"; // change name here
 const BPM = 78;
+
+// Timings (tweak if you want)
+const INTRO_SECONDS = 6.5;       // how long intro video shows before switching
+const PAGE1_SECONDS  = 8.0;      // how long the text page shows before going to reveal page
+const BOUQUET_SECONDS = 10.0;    // how long bouquet plays before final page
 // ========================
 
 document.getElementById("herName").textContent = HER_NAME;
 
 const introOverlay = document.getElementById("introOverlay");
 const introVideo   = document.getElementById("introVideo");
-const beginBtn     = document.getElementById("beginBtn");
 const tapHint      = document.getElementById("tapHint");
-
 const mainContent  = document.getElementById("mainContent");
 const music        = document.getElementById("bgMusic");
 
@@ -17,37 +20,51 @@ const page1 = document.getElementById("page1");
 const page2 = document.getElementById("page2");
 const page3 = document.getElementById("page3");
 
-const toPage2      = document.getElementById("toPage2");
-const toPage3      = document.getElementById("toPage3");
-
 const surpriseBtn  = document.getElementById("surpriseBtn");
 const surpriseBox  = document.getElementById("surpriseBox");
 const bouquetVideo = document.getElementById("bouquetVideo");
-
 const whisper      = document.getElementById("whisper");
 
-// ---- Autoplay intro video (muted) ----
+function showPage(n){
+  [page1, page2, page3].forEach(p => p.classList.remove("active"));
+  if (n === 1) page1.classList.add("active");
+  if (n === 2) page2.classList.add("active");
+  if (n === 3) page3.classList.add("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// Autoplay intro video (muted)
 window.addEventListener("load", () => {
   introVideo.muted = true;
   introVideo.loop = true;
   introVideo.playsInline = true;
 
-  introVideo.play().catch(() => {
-    // If blocked, it will still play after user taps Begin
-  });
+  introVideo.play().catch(()=>{});
 
-  // After metadata, sharpen the blur gradually
+  // blur -> sharp once it loads
   introVideo.addEventListener("loadeddata", () => {
     introVideo.classList.add("intro-sharp");
-  }, { once: true });
+  }, { once:true });
+
+  // After intro duration, fade overlay out and go to Page 1
+  setTimeout(() => {
+    introOverlay.classList.add("fade-out");
+    setTimeout(() => {
+      introOverlay.style.display = "none";
+      mainContent.classList.remove("hidden");
+      showPage(1);
+      startCueTimeline();
+      // Auto go to Page 2 after Page 1 duration
+      setTimeout(() => showPage(2), PAGE1_SECONDS * 1000);
+    }, 900);
+  }, INTRO_SECONDS * 1000);
 });
 
-// ---- Start music on FIRST interaction anywhere ----
+// Start music on first interaction anywhere
 let musicStarted = false;
 function startMusicOnce(){
   if (musicStarted) return;
   musicStarted = true;
-
   if (tapHint) tapHint.textContent = "music is playing… 🎧";
 
   music.volume = 0;
@@ -64,7 +81,7 @@ function startMusicOnce(){
 document.addEventListener("click", startMusicOnce, { once:true });
 document.addEventListener("touchstart", startMusicOnce, { once:true });
 
-// ---- Beat pulse ----
+// Beat pulse
 function startBeatPulse(){
   const intervalMs = Math.round((60 / BPM) * 1000);
   const beatEls = document.querySelectorAll(".beat");
@@ -78,43 +95,37 @@ function startBeatPulse(){
 }
 startBeatPulse();
 
-// ---- Pages ----
-function showPage(n){
-  [page1, page2, page3].forEach(p => p.classList.remove("active"));
-  if (n === 1) page1.classList.add("active");
-  if (n === 2) page2.classList.add("active");
-  if (n === 3) page3.classList.add("active");
-  window.scrollTo({ top: 0, behavior: "smooth" });
+// Text cue timing (like your original)
+function startCueTimeline(){
+  const cues = document.querySelectorAll(".cue[data-cue]");
+  const schedule = [
+    { t: 0.8, i: 0 },
+    { t: 2.4, i: 1 },
+    { t: 4.0, i: 2 },
+    { t: 5.2, i: 3 },
+  ];
+  schedule.forEach(s => setTimeout(() => cues[s.i]?.classList.add("show"), s.t * 1000));
 }
 
-// Begin (fade into main, no rushing)
-beginBtn.addEventListener("click", () => {
-  introOverlay.classList.add("fade-out");
-  setTimeout(() => {
-    introOverlay.style.display = "none";
-    mainContent.classList.remove("hidden");
-    showPage(1);
-  }, 900);
-});
-
-toPage2.addEventListener("click", () => showPage(2));
-
+// Tap Reveal -> show bouquet and autoplay it, then auto final
 surpriseBtn.addEventListener("click", () => {
   surpriseBox.classList.remove("hidden");
-  // Play bouquet video on reveal
+
   if (bouquetVideo) {
     bouquetVideo.muted = true;
+    bouquetVideo.loop = false;          // let it play once for the moment
     bouquetVideo.currentTime = 0;
     bouquetVideo.play().catch(()=>{});
   }
+
+  // After bouquet seconds -> final page
+  setTimeout(() => {
+    showPage(3);
+    setTimeout(() => whisper.classList.add("show"), 900);
+  }, BOUQUET_SECONDS * 1000);
 });
 
-toPage3.addEventListener("click", () => {
-  showPage(3);
-  setTimeout(() => whisper.classList.add("show"), 900);
-});
-
-// ---- Petals ----
+// Petals
 for (let i = 0; i < 18; i++) {
   const petal = document.createElement("img");
   petal.src = "./assets/petal.png";
