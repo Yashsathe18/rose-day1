@@ -6,11 +6,11 @@ const BPM = 78;
 document.getElementById("herName").textContent = HER_NAME;
 
 const introOverlay = document.getElementById("introOverlay");
-const introVideo = document.getElementById("introVideo");
-const beginBtn = document.getElementById("beginBtn");
-const mainContent = document.getElementById("mainContent");
-const music = document.getElementById("bgMusic");
-const vidDebug = document.getElementById("vidDebug");
+const introVideo   = document.getElementById("introVideo");
+const beginBtn     = document.getElementById("beginBtn");
+const mainContent  = document.getElementById("mainContent");
+const music        = document.getElementById("bgMusic");
+const vidDebug     = document.getElementById("vidDebug");
 
 const page1 = document.getElementById("page1");
 const page2 = document.getElementById("page2");
@@ -19,30 +19,27 @@ const page3 = document.getElementById("page3");
 const toPage2 = document.getElementById("toPage2");
 const toPage3 = document.getElementById("toPage3");
 
-const surpriseBtn = document.getElementById("surpriseBtn");
-const surpriseBox = document.getElementById("surpriseBox");
-const bouquetVideo = document.getElementById("bouquetVideo");
+const surpriseBtn     = document.getElementById("surpriseBtn");
+const surpriseBox     = document.getElementById("surpriseBox");
+const bouquetVideo    = document.getElementById("bouquetVideo");
 const bouquetFallback = document.getElementById("bouquetFallback");
-const whisper = document.getElementById("whisper");
+const whisper         = document.getElementById("whisper");
 
 function setDebug(msg){ if (vidDebug) vidDebug.textContent = msg; }
 
-// Show real video error code
-window.addEventListener("load", () => {
-  if (!introVideo) return;
-
-  introVideo.addEventListener("error", () => {
-    const code = introVideo.error?.code;
-    // 1=ABORTED 2=NETWORK 3=DECODE 4=SRC_NOT_SUPPORTED
-    setDebug("intro: ERROR ❌ code=" + code + " (2=network,3=decode,4=src)");
-  });
-
-  introVideo.addEventListener("loadedmetadata", () => {
-    setDebug(`intro: metadata ✅ (${introVideo.videoWidth}x${introVideo.videoHeight})`);
-  });
-
-  setDebug("intro: ready (tap Begin)");
+// Show exact error code if video fails
+introVideo.addEventListener("error", () => {
+  const code = introVideo.error?.code;
+  // 1=ABORTED 2=NETWORK 3=DECODE 4=SRC_NOT_SUPPORTED
+  setDebug("intro: ERROR ❌ code=" + code + " (2=network,3=decode,4=src)");
 });
+introVideo.addEventListener("loadedmetadata", () => {
+  setDebug(`intro: ready ✅ (${introVideo.videoWidth}x${introVideo.videoHeight}) — tap Begin`);
+});
+
+// IMPORTANT: We do NOT call introVideo.play() on load.
+// That avoids the “autoplay blocked” message entirely.
+setDebug("intro: tap Begin to start");
 
 // Beat pulse
 function startBeatPulse(){
@@ -81,15 +78,21 @@ function showPage(n){
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-// Begin: start video after tap + music
-beginBtn.addEventListener("click", async () => {
+// Start experience ONLY after user tap/click
+let started = false;
+async function startExperience(){
+  if (started) return;
+  started = true;
+
+  // Start intro video after gesture
   try {
     introVideo.muted = true;
     introVideo.currentTime = 0;
     await introVideo.play();
     setDebug("intro: playing ✅");
-  } catch (e) {
-    // If it fails, the error listener will show the code
+  } catch(e) {
+    // If it fails, the error listener above will show the code
+    setDebug("intro: could not play (check error code)");
   }
 
   await playMusicCinematic();
@@ -101,15 +104,27 @@ beginBtn.addEventListener("click", async () => {
     mainContent.classList.remove("hidden");
     showPage(1);
   }, 900);
+}
+
+// Begin button starts it
+beginBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  startExperience();
 });
 
-// Next buttons (user controls pace)
+// Also allow tapping anywhere on intro overlay
+introOverlay.addEventListener("click", (e) => {
+  // avoid double triggering if button was clicked
+  if (e.target && e.target.id === "beginBtn") return;
+  startExperience();
+});
+
+// Next buttons
 toPage2.addEventListener("click", () => showPage(2));
 
 surpriseBtn.addEventListener("click", () => {
   surpriseBox.classList.remove("hidden");
 
-  // Try bouquet video after a user gesture
   if (bouquetVideo) {
     bouquetVideo.addEventListener("error", () => {
       if (bouquetFallback) bouquetFallback.classList.remove("hidden");
