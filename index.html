@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Rose Day — For Her</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="./style.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Great+Vibes&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -15,15 +15,14 @@
   <div class="bloom-bg"></div>
 
   <!-- Background music -->
-  <audio id="bgMusic" src="assets/music.mp3" preload="auto" loop></audio>
+  <audio id="bgMusic" src="./assets/music.mp3" preload="auto" loop></audio>
 
   <!-- INTRO OVERLAY -->
   <div class="intro-overlay" id="introOverlay">
     <video
       class="intro-video"
       id="introVideo"
-      src="assets/intro.mp4"
-      autoplay
+      src="./assets/intro.mp4"
       muted
       loop
       playsinline
@@ -33,9 +32,8 @@
     <div class="intro-shade"></div>
 
     <div class="intro-content">
-      <!-- Romantic “Netflix-ish” title -->
-      <div class="netflix-wrap" id="netflixWrap">
-        <div class="netflix-logo" id="netflixLogo">
+      <div class="netflix-wrap">
+        <div class="netflix-logo">
           <span>A</span><span>&nbsp;</span><span>L</span><span>I</span><span>T</span><span>T</span><span>L</span><span>E</span>
           <span>&nbsp;&nbsp;</span>
           <span>S</span><span>T</span><span>O</span><span>R</span><span>Y</span>
@@ -43,15 +41,18 @@
         <div class="light-sweep"></div>
       </div>
 
-      <div class="intro-sub beat" id="introSub">made with all my heart.</div>
+      <div class="intro-sub beat">made with all my heart.</div>
 
-      <div class="name-reveal" id="nameReveal">
+      <div class="name-reveal">
         for <span id="herName">Her</span>
       </div>
 
       <button class="btn" id="beginBtn">Tap to Begin</button>
       <div class="hint">Turn volume up 🎧 (music starts after tap)</div>
     </div>
+
+    <!-- Debug badge (helps fix video instantly) -->
+    <div id="vidDebug" class="vid-debug">video: booting…</div>
   </div>
 
   <!-- MAIN CONTENT -->
@@ -60,7 +61,6 @@
     <section class="hero">
       <h1 class="soft-title">For the most beautiful soul</h1>
 
-      <!-- Beat-synced cues -->
       <div class="cineline">
         <div class="cue beat" data-cue="1">Some places feel like cinema.</div>
         <div class="cue beat" data-cue="2">Some moments feel like forever.</div>
@@ -69,15 +69,6 @@
       </div>
 
       <button class="btn soft" id="continueBtn">Continue</button>
-    </section>
-
-    <!-- OPTIONAL MEMORY VIDEO (remove this whole section if you don't want it) -->
-    <section class="video-section">
-      <h2 class="section-title">A little scene 💛</h2>
-      <div class="video-card">
-        <video class="memory-video" src="assets/memory1.mp4" controls playsinline></video>
-      </div>
-      <p class="caption beat" id="captionBeat">Every second with you is a soft miracle.</p>
     </section>
 
     <!-- SURPRISE -->
@@ -90,11 +81,12 @@
       <div class="surprise hidden" id="surpriseBox">
         <video
           class="bouquet-video"
-          src="assets/bouquet.mp4"
-          autoplay
+          id="bouquetVideo"
+          src="./assets/bouquet.mp4"
           muted
           loop
           playsinline
+          preload="auto"
         ></video>
 
         <p class="flowers-text beat">
@@ -120,6 +112,6 @@
 
   </main>
 
-  <script src="script.js"></script>
+  <script src="./script.js"></script>
 </body>
 </html>
