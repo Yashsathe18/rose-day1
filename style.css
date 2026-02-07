@@ -128,11 +128,24 @@ body{font-family:'Playfair Display',serif;background:#f9f6f4;overflow-x:hidden;c
 .final h3{font-size:2rem;margin-top:.8rem}
 .final-text{margin-top:1.2rem;font-size:1.1rem;opacity:.95}
 .whisper{
-  margin:2.2rem auto 0;font-size:1.4rem;letter-spacing:.14em;text-transform:lowercase;
-  opacity:0;filter:blur(4px);transform:translateY(10px);
-  transition:opacity 2.2s ease, filter 2.2s ease, transform 2.2s ease
+  margin:2.4rem auto 0;
+  font-size:1.5rem;
+  letter-spacing:.18em;
+  text-transform:lowercase;
+  opacity:0;
+  filter:blur(6px);
+  transform:translateY(18px) scale(0.98);
+  transition:
+    opacity 1.6s ease,
+    filter 1.6s ease,
+    transform 1.6s cubic-bezier(.19,1,.22,1);
 }
-.whisper.show{opacity:.85;filter:blur(0);transform:translateY(0)}
+.whisper.show{
+  opacity:.9;
+  filter:blur(0);
+  transform:translateY(0) scale(1);
+}
+
 
 /* Fade out intro overlay */
 .fade-out{animation:fadeOut .85s ease forwards}
