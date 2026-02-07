@@ -9,13 +9,12 @@
 </head>
 <body>
 
-  <!-- Animated cinematic bars -->
   <div class="cinema-bars" aria-hidden="true"></div>
   <div class="bloom-bg"></div>
 
   <audio id="bgMusic" src="./assets/music.mp3" preload="auto" loop></audio>
 
-  <!-- INTRO OVERLAY -->
+  <!-- INTRO (autoplays, then auto transitions) -->
   <div class="intro-overlay" id="introOverlay">
     <video
       class="intro-video intro-soft"
@@ -39,41 +38,37 @@
         <div class="light-sweep"></div>
       </div>
 
-      <div class="intro-sub intro-fade">made with all my heart.</div>
+      <div class="intro-sub">made with all my heart.</div>
 
-      <div class="name-reveal intro-fade">
+      <div class="name-reveal">
         for <span id="herName">Her</span>
       </div>
 
-      <div class="tap-hint intro-fade" id="tapHint">
-        tap anywhere to start the music 🎧
-      </div>
-
-      <button type="button" class="btn intro-fade" id="beginBtn">Begin</button>
+      <div class="tap-hint" id="tapHint">tap anywhere to start the music 🎧</div>
     </div>
   </div>
 
   <!-- MAIN -->
   <main id="mainContent" class="hidden">
 
-    <!-- PAGE 1 -->
+    <!-- PAGE 1: TEXT (same feel as first one) -->
     <section class="page active" id="page1">
       <h1 class="soft-title">For the most beautiful soul</h1>
 
       <div class="cineline">
-        <div class="cue beat show">Some places feel like cinema.</div>
-        <div class="cue beat show">Some moments feel like forever.</div>
-        <div class="cue beat show">And you…</div>
-        <div class="cue beat show">feel like home.</div>
+        <div class="cue beat" data-cue="1">Some places feel like cinema.</div>
+        <div class="cue beat" data-cue="2">Some moments feel like forever.</div>
+        <div class="cue beat" data-cue="3">And you…</div>
+        <div class="cue beat" data-cue="4">feel like home.</div>
       </div>
 
-      <button type="button" class="btn soft" id="toPage2">Next</button>
+      <div class="small-hint">just watch…</div>
     </section>
 
-    <!-- PAGE 2 -->
+    <!-- PAGE 2: TAP TO REVEAL -->
     <section class="page" id="page2">
       <h2 class="section-title">One last thing…</h2>
-      <p class="caption">When you’re ready, tap reveal.</p>
+      <p class="caption">Tap reveal when you’re ready.</p>
 
       <button type="button" class="btn" id="surpriseBtn">Reveal Surprise ✨</button>
 
@@ -84,7 +79,6 @@
             id="bouquetVideo"
             src="./assets/bouquet.mp4"
             muted
-            loop
             playsinline
             preload="auto"
           ></video>
@@ -93,15 +87,13 @@
 
         <p class="flowers-text beat">
           No red roses —<br>
-          lilies, baby’s breath, and soft blooms…<br>
+          only lilies, baby’s breath, and soft blooms…<br>
           rich, elegant, and made for you.
         </p>
-
-        <button type="button" class="btn soft" id="toPage3">Next</button>
       </div>
     </section>
 
-    <!-- PAGE 3 -->
+    <!-- PAGE 3: FINAL -->
     <section class="page" id="page3">
       <h2 class="final-title">Happy Rose Day</h2>
       <h3 class="final-sub">Baby Girl 🌸</h3>
