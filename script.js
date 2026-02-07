@@ -108,23 +108,25 @@ document.addEventListener("DOMContentLoaded", () => {
   // Reveal bouquet + autoplay
   surpriseBtn.addEventListener("click", () => {
     surpriseBox.classList.remove("hidden");
+
     if (bouquetVideo) {
       bouquetVideo.muted = true;
       bouquetVideo.loop = true;
       bouquetVideo.currentTime = 0;
       bouquetVideo.play().catch(()=>{});
     }
-    // whisper shows softly (even if they scroll later)
-    setTimeout(() => {
-  whisper.classList.add("show");
-}, 1200); // appears after 1.2s
-
   });
 
-  // NEW: Next button scrolls to final section
+  // Next button scrolls to final + delayed love you
   if (nextBtn) {
     nextBtn.addEventListener("click", () => {
       document.getElementById("finalSection").scrollIntoView({ behavior: "smooth" });
+
+      // Reset and re-play animation every time
+      whisper.classList.remove("show");
+      setTimeout(() => {
+        whisper.classList.add("show");
+      }, 1200);
     });
   }
 
