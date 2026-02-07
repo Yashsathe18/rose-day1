@@ -1,40 +1,132 @@
 // ====== EDIT THESE ======
-const HER_NAME = "Baby Girl"; // change to her real name/nickname
-const BPM = 78;               // dramatic tempo (72–90)
+const HER_NAME = "Baby Girl"; // change to her name/nickname
+const BPM = 78;
 // ========================
 
 document.getElementById("herName").textContent = HER_NAME;
 
-// Debug helper (shows exactly why video fails)
+const introOverlay = document.getElementById("introOverlay");
+const introVideo = document.getElementById("introVideo");
+const beginBtn = document.getElementById("beginBtn");
+const mainContent = document.getElementById("mainContent");
+const music = document.getElementById("bgMusic");
+const vidDebug = document.getElementById("vidDebug");
+
+const page1 = document.getElementById("page1");
+const page2 = document.getElementById("page2");
+const page3 = document.getElementById("page3");
+
+const toPage2 = document.getElementById("toPage2");
+const toPage3 = document.getElementById("toPage3");
+
+const surpriseBtn = document.getElementById("surpriseBtn");
+const surpriseBox = document.getElementById("surpriseBox");
+const bouquetVideo = document.getElementById("bouquetVideo");
+const bouquetFallback = document.getElementById("bouquetFallback");
+const whisper = document.getElementById("whisper");
+
+function setDebug(msg){ if (vidDebug) vidDebug.textContent = msg; }
+
+// Intro video debug
 window.addEventListener("load", async () => {
-  const v = document.getElementById("introVideo");
-  const d = document.getElementById("vidDebug");
-  if (!v || !d) return;
+  setDebug("intro: loading… " + introVideo.currentSrc);
 
-  const log = (msg) => (d.textContent = msg);
-
-  log("video: loading… " + v.currentSrc);
-
-  v.addEventListener("loadstart", () => log("video: loadstart"));
-  v.addEventListener("loadedmetadata", () => log(`video: metadata ✅ (${v.videoWidth}x${v.videoHeight})`));
-  v.addEventListener("loadeddata", () => log("video: loadeddata ✅"));
-  v.addEventListener("canplay", () => log("video: canplay ✅"));
-  v.addEventListener("playing", () => log("video: playing ✅"));
-  v.addEventListener("stalled", () => log("video: stalled…"));
-  v.addEventListener("waiting", () => log("video: waiting…"));
-
-  v.addEventListener("error", () => {
-    const code = v.error?.code; // 2=NETWORK 3=DECODE 4=SRC_NOT_SUPPORTED
-    log("video: ERROR ❌ code=" + code + " (2=network,3=decode,4=src)");
+  introVideo.addEventListener("loadedmetadata", () =>
+    setDebug(`intro: metadata ✅ (${introVideo.videoWidth}x${introVideo.videoHeight})`)
+  );
+  introVideo.addEventListener("playing", () => setDebug("intro: playing ✅"));
+  introVideo.addEventListener("error", () => {
+    const code = introVideo.error?.code; // 2=network 3=decode 4=src
+    setDebug("intro: ERROR ❌ code=" + code + " (2=network,3=decode,4=src)");
   });
 
-  // Attempt muted autoplay
+  // Try muted autoplay
   try {
-    v.muted = true;
-    await v.play();
+    introVideo.muted = true;
+    await introVideo.play();
   } catch (e) {
-    log("video: autoplay blocked (will start after tap) ❗");
+    setDebug("intro: autoplay blocked (tap Begin) ❗");
   }
+});
+
+// Beat pulse
+function startBeatPulse(){
+  const intervalMs = Math.round((60 / BPM) * 1000);
+  const beatEls = document.querySelectorAll(".beat");
+  setInterval(() => {
+    beatEls.forEach(el => {
+      el.classList.remove("pulse");
+      void el.offsetWidth;
+      el.classList.add("pulse");
+    });
+  }, intervalMs);
+}
+
+// Music fade-in
+async function playMusicCinematic(){
+  try {
+    music.volume = 0;
+    await music.play();
+    let v = 0;
+    const target = 0.65;
+    const fade = setInterval(() => {
+      v += 0.02;
+      music.volume = Math.min(v, target);
+      if (v >= target) clearInterval(fade);
+    }, 120);
+  } catch(e) {}
+}
+
+// Page switcher
+function showPage(n){
+  [page1, page2, page3].forEach(p => p.classList.remove("active"));
+  if (n === 1) page1.classList.add("active");
+  if (n === 2) page2.classList.add("active");
+  if (n === 3) page3.classList.add("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// Begin
+beginBtn.addEventListener("click", async () => {
+  try { introVideo.muted = true; await introVideo.play(); } catch(e) {}
+  await playMusicCinematic();
+  startBeatPulse();
+
+  introOverlay.classList.add("fade-out");
+  setTimeout(() => {
+    introOverlay.style.display = "none";
+    mainContent.classList.remove("hidden");
+    showPage(1);
+  }, 900);
+});
+
+// Next buttons (NO rushing)
+toPage2.addEventListener("click", () => showPage(2));
+
+surpriseBtn.addEventListener("click", () => {
+  surpriseBox.classList.remove("hidden");
+
+  // Attempt bouquet video
+  if (bouquetVideo) {
+    bouquetVideo.addEventListener("error", () => {
+      if (bouquetFallback) bouquetFallback.classList.remove("hidden");
+    }, { once: true });
+
+    try {
+      bouquetVideo.muted = true;
+      bouquetVideo.currentTime = 0;
+      bouquetVideo.play().catch(() => {
+        if (bouquetFallback) bouquetFallback.classList.remove("hidden");
+      });
+    } catch(e) {
+      if (bouquetFallback) bouquetFallback.classList.remove("hidden");
+    }
+  }
+});
+
+toPage3.addEventListener("click", () => {
+  showPage(3);
+  setTimeout(() => whisper.classList.add("show"), 900);
 });
 
 // Petals
@@ -52,138 +144,7 @@ for (let i = 0; i < 18; i++) {
 }
 const petalStyle = document.createElement("style");
 petalStyle.innerHTML = `
-.petal{
-  position:fixed;
-  z-index:-1;
-  pointer-events:none;
-  animation-name:fall;
-  animation-timing-function:linear;
-  animation-iteration-count:infinite;
-}
-@keyframes fall{
-  to{ transform: translateY(140vh) rotate(360deg); }
-}`;
-document.head.appendChild(petalStyle);
-
-// Elements
-const introOverlay = document.getElementById("introOverlay");
-const introVideo = document.getElementById("introVideo");
-const beginBtn = document.getElementById("beginBtn");
-const mainContent = document.getElementById("mainContent");
-const music = document.getElementById("bgMusic");
-
-const continueBtn = document.getElementById("continueBtn");
-const surpriseBtn = document.getElementById("surpriseBtn");
-const surpriseBox = document.getElementById("surpriseBox");
-const bouquetVideo = document.getElementById("bouquetVideo");
-const whisper = document.getElementById("whisper");
-
-// Beat pulse engine
-function startBeatPulse(){
-  const intervalMs = Math.round((60 / BPM) * 1000);
-  const beatEls = document.querySelectorAll(".beat");
-  setInterval(() => {
-    beatEls.forEach(el => {
-      el.classList.remove("pulse");
-      void el.offsetWidth;
-      el.classList.add("pulse");
-    });
-  }, intervalMs);
-}
-
-// Cue timeline
-function startCueTimeline(){
-  const cues = document.querySelectorAll(".cue[data-cue]");
-  const schedule = [
-    { t: 0.8, i: 0 },
-    { t: 2.4, i: 1 },
-    { t: 4.0, i: 2 },
-    { t: 5.2, i: 3 },
-  ];
-  schedule.forEach(s => setTimeout(() => cues[s.i]?.classList.add("show"), s.t * 1000));
-}
-
-// Music cinematic fade-in
-async function playMusicCinematic(){
-  try {
-    music.volume = 0;
-    await music.play();
-    let v = 0;
-    const target = 0.65;
-    const fade = setInterval(() => {
-      v += 0.02;
-      music.volume = Math.min(v, target);
-      if (v >= target) clearInterval(fade);
-    }, 120);
-  } catch(e) {}
-}
-
-// Begin (user gesture)
-beginBtn.addEventListener("click", async () => {
-  // start intro video reliably after tap
-  try {
-    introVideo.muted = true;
-    await introVideo.play();
-  } catch(e) {}
-
-  await playMusicCinematic();
-  startBeatPulse();
-
-  introOverlay.classList.add("fade-out");
-  setTimeout(() => {
-    introOverlay.style.display = "none";
-    mainContent.classList.remove("hidden");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    startCueTimeline();
-  }, 900);
-});
-
-// Continue
-continueBtn.addEventListener("click", () => {
-  document.getElementById("bouquetSection").scrollIntoView({ behavior: "smooth" });
-});
-
-// Surprise reveal
-surpriseBtn.addEventListener("click", () => {
-  surpriseBox.classList.remove("hidden");
-  popConfetti();
-
-  if (bouquetVideo) {
-    try {
-      bouquetVideo.muted = true;
-      bouquetVideo.currentTime = 0;
-      bouquetVideo.play().catch(()=>{});
-    } catch(e) {}
-  }
-
-  setTimeout(() => {
-    document.getElementById("finalSection").scrollIntoView({ behavior: "smooth" });
-  }, 900);
-
-  setTimeout(() => whisper.classList.add("show"), 2400);
-});
-
-// Confetti
-function popConfetti(){
-  for(let i=0;i<70;i++){
-    const c = document.createElement("div");
-    c.className="conf";
-    c.style.left = Math.random()*100+"vw";
-    c.style.top = (40 + Math.random()*15)+"vh";
-    c.style.width = (6 + Math.random()*6)+"px";
-    c.style.height = (10 + Math.random()*12)+"px";
-    c.style.transform = `rotate(${Math.random()*360}deg)`;
-    c.style.opacity = 0.9;
-    c.style.animationDuration = (1.6 + Math.random()*1.2)+"s";
-    const hue = Math.floor(Math.random()*360);
-    c.style.background = `hsl(${hue}, 70%, 75%)`;
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(), 2500);
-  }
-}
-const confStyle = document.createElement("style");
-confStyle.innerHTML = `
-.conf{ position:fixed; z-index:6; border-radius:4px; animation: confFall linear forwards; }
-@keyframes confFall{ to{ transform: translateY(80vh) rotate(720deg); opacity:0; } }
+.petal{position:fixed;z-index:-1;pointer-events:none;animation:fall linear infinite}
+@keyframes fall{to{transform:translateY(140vh) rotate(360deg)}}
 `;
-document.head.appendChild(confStyle);
+document.head.appendChild(petalStyle);
