@@ -3,12 +3,11 @@ const HER_NAME = "Baby Girl"; // change this
 const BPM = 78;
 // ========================
 
-window.addEventListener("load", () => {
-  // Grab elements safely
+document.addEventListener("DOMContentLoaded", () => {
   const introOverlay = document.getElementById("introOverlay");
   const introVideo   = document.getElementById("introVideo");
-  const introContent = document.getElementById("introContent");
   const trailerCard  = document.getElementById("trailerCard");
+  const introContent = document.getElementById("introContent");
 
   const beginBtn     = document.getElementById("beginBtn");
   const mainContent  = document.getElementById("mainContent");
@@ -23,37 +22,29 @@ window.addEventListener("load", () => {
   const herNameEl = document.getElementById("herName");
   if (herNameEl) herNameEl.textContent = HER_NAME;
 
-  // ---------- Autoplay intro video (muted) ----------
+  // Autoplay intro video (muted) in background
   if (introVideo) {
     introVideo.muted = true;
     introVideo.loop = true;
     introVideo.playsInline = true;
-    introVideo.play().catch(() => {
-      // If autoplay is blocked, it will still show the video poster/first frame.
-      // Begin button still works.
-    });
+    introVideo.play().catch(()=>{});
   }
 
-  // ---------- Show Begin UI after trailer animation ends ----------
-  // Preferred: listen for animation end of trailerCard
-  if (trailerCard && introContent) {
-    // If animationend never fires (rare), fallback after 3.5s
-    const fallback = setTimeout(() => introContent.classList.add("show"), 3500);
+  // Show Begin UI after the trailer card finishes (animationend), fallback safe
+  if (introContent) {
+    const fallback = setTimeout(() => introContent.classList.add("show"), 3200);
 
-    trailerCard.addEventListener("animationend", (e) => {
-      // Trailer has 2 animations: trailerIn + trailerOut.
-      // We show Begin after trailerOut completes.
-      if (e.animationName === "trailerOut") {
-        clearTimeout(fallback);
-        introContent.classList.add("show");
-      }
-    });
-  } else if (introContent) {
-    // If trailerCard missing, just show begin UI immediately
-    introContent.classList.add("show");
+    if (trailerCard) {
+      trailerCard.addEventListener("animationend", (e) => {
+        if (e.animationName === "trailerOut") {
+          clearTimeout(fallback);
+          introContent.classList.add("show");
+        }
+      });
+    }
   }
 
-  // ---------- Beat pulse ----------
+  // Beat pulse
   function startBeatPulse(){
     const intervalMs = Math.round((60 / BPM) * 1000);
     const beatEls = document.querySelectorAll(".beat");
@@ -66,7 +57,7 @@ window.addEventListener("load", () => {
     }, intervalMs);
   }
 
-  // ---------- Cue timeline (like original) ----------
+  // Cue timeline
   function startCueTimeline(){
     const cues = document.querySelectorAll(".cue[data-cue]");
     const schedule = [
@@ -78,7 +69,7 @@ window.addEventListener("load", () => {
     schedule.forEach(s => setTimeout(() => cues[s.i]?.classList.add("show"), s.t * 1000));
   }
 
-  // ---------- Music starts after tap ----------
+  // Music fade-in on tap
   async function playMusicCinematic(){
     if (!music) return;
     try {
@@ -94,14 +85,13 @@ window.addEventListener("load", () => {
     } catch(e) {}
   }
 
-  // ---------- Begin ----------
+  // Begin: start music + show main, no extra delays
   if (beginBtn) {
     beginBtn.addEventListener("click", async () => {
       await playMusicCinematic();
       startBeatPulse();
 
       if (introOverlay) introOverlay.classList.add("fade-out");
-
       setTimeout(() => {
         if (introOverlay) introOverlay.style.display = "none";
         if (mainContent) mainContent.classList.remove("hidden");
@@ -111,14 +101,14 @@ window.addEventListener("load", () => {
     });
   }
 
-  // ---------- Continue scroll ----------
+  // Continue scroll
   if (continueBtn) {
     continueBtn.addEventListener("click", () => {
       document.getElementById("bouquetSection")?.scrollIntoView({ behavior: "smooth" });
     });
   }
 
-  // ---------- Reveal bouquet + autoplay ----------
+  // Reveal bouquet + autoplay
   if (surpriseBtn) {
     surpriseBtn.addEventListener("click", () => {
       if (surpriseBox) surpriseBox.classList.remove("hidden");
@@ -130,12 +120,11 @@ window.addEventListener("load", () => {
         bouquetVideo.play().catch(()=>{});
       }
 
-      // Whisper appears (no forced scroll)
       if (whisper) setTimeout(() => whisper.classList.add("show"), 2400);
     });
   }
 
-  // ---------- Petals ----------
+  // Petals
   for (let i = 0; i < 18; i++) {
     const petal = document.createElement("img");
     petal.src = "./assets/petal.png";
