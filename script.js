@@ -115,7 +115,10 @@ document.addEventListener("DOMContentLoaded", () => {
       bouquetVideo.play().catch(()=>{});
     }
     // whisper shows softly (even if they scroll later)
-    setTimeout(() => whisper.classList.add("show"), 2400);
+    setTimeout(() => {
+  whisper.classList.add("show");
+}, 1200); // appears after 1.2s
+
   });
 
   // NEW: Next button scrolls to final section
