@@ -3,15 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>For My Baby Girl 🌷</title>
+  <title>Rose Day — For Her</title>
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Great+Vibes&display=swap" rel="stylesheet">
 </head>
 <body>
 
+  <!-- Cinematic bars -->
+  <div class="cinema-bars" aria-hidden="true"></div>
+
   <div class="bloom-bg"></div>
 
-  <!-- INTRO VIDEO OVERLAY -->
+  <!-- Background music -->
+  <audio id="bgMusic" src="assets/music.mp3" preload="auto" loop></audio>
+
+  <!-- INTRO OVERLAY -->
   <div class="intro-overlay" id="introOverlay">
     <video
       class="intro-video"
@@ -21,15 +27,30 @@
       muted
       loop
       playsinline
+      preload="auto"
     ></video>
 
     <div class="intro-shade"></div>
 
     <div class="intro-content">
-      <div class="intro-title">For You</div>
-      <div class="intro-sub">I made this little surprise… 🌸</div>
+      <!-- Romantic “Netflix-ish” title -->
+      <div class="netflix-wrap" id="netflixWrap">
+        <div class="netflix-logo" id="netflixLogo">
+          <span>A</span><span>&nbsp;</span><span>L</span><span>I</span><span>T</span><span>T</span><span>L</span><span>E</span>
+          <span>&nbsp;&nbsp;</span>
+          <span>S</span><span>T</span><span>O</span><span>R</span><span>Y</span>
+        </div>
+        <div class="light-sweep"></div>
+      </div>
+
+      <div class="intro-sub beat" id="introSub">made with all my heart.</div>
+
+      <div class="name-reveal" id="nameReveal">
+        for <span id="herName">Her</span>
+      </div>
+
       <button class="btn" id="beginBtn">Tap to Begin</button>
-      <div class="hint">Tip: turn volume on after you begin (optional)</div>
+      <div class="hint">Turn volume up 🎧 (music starts after tap)</div>
     </div>
   </div>
 
@@ -37,47 +58,64 @@
   <main id="mainContent" class="hidden">
 
     <section class="hero">
-      <h1>For the most beautiful soul</h1>
-      <p>
-        Some flowers bloom once a year,<br />
-        but you bloom in my life every single day.
-      </p>
-      <button class="btn soft" id="scrollBtn">Continue</button>
+      <h1 class="soft-title">For the most beautiful soul</h1>
+
+      <!-- Beat-synced cues -->
+      <div class="cineline">
+        <div class="cue beat" data-cue="1">Some places feel like cinema.</div>
+        <div class="cue beat" data-cue="2">Some moments feel like forever.</div>
+        <div class="cue beat" data-cue="3">And you…</div>
+        <div class="cue beat" data-cue="4">feel like home.</div>
+      </div>
+
+      <button class="btn soft" id="continueBtn">Continue</button>
     </section>
 
-    <!-- OPTIONAL VIDEO SECTION -->
+    <!-- OPTIONAL MEMORY VIDEO (remove this whole section if you don't want it) -->
     <section class="video-section">
-      <h2 class="section-title">A little moment 💛</h2>
+      <h2 class="section-title">A little scene 💛</h2>
       <div class="video-card">
         <video class="memory-video" src="assets/memory1.mp4" controls playsinline></video>
       </div>
-      <p class="caption">Every second with you feels like home.</p>
+      <p class="caption beat" id="captionBeat">Every second with you is a soft miracle.</p>
     </section>
 
-    <!-- BOUQUET + SURPRISE -->
+    <!-- SURPRISE -->
     <section class="bouquet-section" id="bouquetSection">
       <h2 class="section-title">One last thing…</h2>
-      <p class="caption">Close your eyes for a second… then open 👀</p>
+      <p class="caption">When you’re ready, tap it.</p>
 
       <button class="btn" id="surpriseBtn">Reveal Surprise ✨</button>
 
       <div class="surprise hidden" id="surpriseBox">
-        <img src="assets/bouquet.png" class="bouquet" alt="Luxury Bouquet">
-        <p class="flowers-text">
-          Not red roses —<br />
-          only **Lilies**, **Baby’s Breath**, and soft blooms…<br />
-          rich, elegant, and as beautiful as you.
+        <video
+          class="bouquet-video"
+          src="assets/bouquet.mp4"
+          autoplay
+          muted
+          loop
+          playsinline
+        ></video>
+
+        <p class="flowers-text beat">
+          Not red roses —<br>
+          only lilies, baby’s breath, and soft blooms…<br>
+          rich, elegant, and made for you.
         </p>
       </div>
     </section>
 
+    <!-- FINAL -->
     <section class="final" id="finalSection">
       <h2>Happy Rose Day</h2>
       <h3>Baby Girl 🌸</h3>
-      <p>
-        No red roses today — only flowers as rare,<br />
-        elegant, and beautiful as you.
+
+      <p class="final-text">
+        In a world full of ordinary flowers,<br>
+        you’re the one that feels rare.
       </p>
+
+      <div class="whisper" id="whisper">i love you.</div>
     </section>
 
   </main>
