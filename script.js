@@ -1,74 +1,42 @@
 // ====== EDIT THESE ======
-const HER_NAME = "Baby Girl"; // change name here
+const HER_NAME = "Baby Girl"; // change this
 const BPM = 78;
-
-// Timings (tweak if you want)
-const INTRO_SECONDS = 6.5;       // how long intro video shows before switching
-const PAGE1_SECONDS  = 8.0;      // how long the text page shows before going to reveal page
-const BOUQUET_SECONDS = 10.0;    // how long bouquet plays before final page
 // ========================
 
 document.getElementById("herName").textContent = HER_NAME;
 
 const introOverlay = document.getElementById("introOverlay");
 const introVideo   = document.getElementById("introVideo");
-const tapHint      = document.getElementById("tapHint");
+const introContent = document.getElementById("introContent");
+
+const beginBtn     = document.getElementById("beginBtn");
 const mainContent  = document.getElementById("mainContent");
 const music        = document.getElementById("bgMusic");
 
-const page1 = document.getElementById("page1");
-const page2 = document.getElementById("page2");
-const page3 = document.getElementById("page3");
-
+const continueBtn  = document.getElementById("continueBtn");
 const surpriseBtn  = document.getElementById("surpriseBtn");
 const surpriseBox  = document.getElementById("surpriseBox");
 const bouquetVideo = document.getElementById("bouquetVideo");
 const whisper      = document.getElementById("whisper");
 
-function showPage(n){
-  [page1, page2, page3].forEach(p => p.classList.remove("active"));
-  if (n === 1) page1.classList.add("active");
-  if (n === 2) page2.classList.add("active");
-  if (n === 3) page3.classList.add("active");
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-// Autoplay intro video (muted)
+// Autoplay intro video (muted) immediately
 window.addEventListener("load", () => {
   introVideo.muted = true;
   introVideo.loop = true;
   introVideo.playsInline = true;
-
   introVideo.play().catch(()=>{});
 
-  // blur -> sharp once it loads
-  introVideo.addEventListener("loadeddata", () => {
-    introVideo.classList.add("intro-sharp");
-  }, { once:true });
-
-  // After intro duration, fade overlay out and go to Page 1
+  // Show Begin UI after the trailer card animation finishes (~3.2s)
   setTimeout(() => {
-    introOverlay.classList.add("fade-out");
-    setTimeout(() => {
-      introOverlay.style.display = "none";
-      mainContent.classList.remove("hidden");
-      showPage(1);
-      startCueTimeline();
-      // Auto go to Page 2 after Page 1 duration
-      setTimeout(() => showPage(2), PAGE1_SECONDS * 1000);
-    }, 900);
-  }, INTRO_SECONDS * 1000);
+    introContent.classList.add("show");
+  }, 3200);
 });
 
-// Start music on first interaction anywhere
-let musicStarted = false;
-function startMusicOnce(){
-  if (musicStarted) return;
-  musicStarted = true;
-  if (tapHint) tapHint.textContent = "music is playing… 🎧";
-
-  music.volume = 0;
-  music.play().then(() => {
+// Music starts after tap (policy-safe)
+async function playMusicCinematic(){
+  try {
+    music.volume = 0;
+    await music.play();
     let v = 0;
     const target = 0.65;
     const fade = setInterval(() => {
@@ -76,12 +44,10 @@ function startMusicOnce(){
       music.volume = Math.min(v, target);
       if (v >= target) clearInterval(fade);
     }, 120);
-  }).catch(()=>{});
+  } catch(e) {}
 }
-document.addEventListener("click", startMusicOnce, { once:true });
-document.addEventListener("touchstart", startMusicOnce, { once:true });
 
-// Beat pulse
+// Beat pulse engine
 function startBeatPulse(){
   const intervalMs = Math.round((60 / BPM) * 1000);
   const beatEls = document.querySelectorAll(".beat");
@@ -93,9 +59,8 @@ function startBeatPulse(){
     });
   }, intervalMs);
 }
-startBeatPulse();
 
-// Text cue timing (like your original)
+// Cue timeline (like original)
 function startCueTimeline(){
   const cues = document.querySelectorAll(".cue[data-cue]");
   const schedule = [
@@ -107,22 +72,37 @@ function startCueTimeline(){
   schedule.forEach(s => setTimeout(() => cues[s.i]?.classList.add("show"), s.t * 1000));
 }
 
-// Tap Reveal -> show bouquet and autoplay it, then auto final
+// Begin
+beginBtn.addEventListener("click", async () => {
+  await playMusicCinematic();
+  startBeatPulse();
+
+  introOverlay.classList.add("fade-out");
+  setTimeout(() => {
+    introOverlay.style.display = "none";
+    mainContent.classList.remove("hidden");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    startCueTimeline();
+  }, 900);
+});
+
+// Continue scrolls to bouquet section
+continueBtn.addEventListener("click", () => {
+  document.getElementById("bouquetSection").scrollIntoView({ behavior: "smooth" });
+});
+
+// Reveal surprise: show + autoplay bouquet
 surpriseBtn.addEventListener("click", () => {
   surpriseBox.classList.remove("hidden");
 
   if (bouquetVideo) {
     bouquetVideo.muted = true;
-    bouquetVideo.loop = false;          // let it play once for the moment
     bouquetVideo.currentTime = 0;
     bouquetVideo.play().catch(()=>{});
   }
 
-  // After bouquet seconds -> final page
-  setTimeout(() => {
-    showPage(3);
-    setTimeout(() => whisper.classList.add("show"), 900);
-  }, BOUQUET_SECONDS * 1000);
+  // show whisper when they scroll to final (no forced scroll)
+  setTimeout(() => whisper.classList.add("show"), 2400);
 });
 
 // Petals
