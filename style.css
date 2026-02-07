@@ -2,7 +2,7 @@
 body{font-family:'Playfair Display',serif;background:#f9f6f4;overflow-x:hidden;color:#3d3d3d}
 .hidden{display:none}
 
-/* Bloom background */
+/* Bloom */
 .bloom-bg{
   position:fixed; inset:0;
   background:
@@ -13,150 +13,51 @@ body{font-family:'Playfair Display',serif;background:#f9f6f4;overflow-x:hidden;c
 }
 @keyframes bloom{from{filter:blur(0)}to{filter:blur(3px)}}
 
-/* Cinematic bars animate in */
-.cinema-bars{
-  position:fixed; inset:0;
-  pointer-events:none;
-  z-index:60;
-}
-.cinema-bars::before,
-.cinema-bars::after{
-  content:"";
-  position:absolute; left:0; right:0;
-  height:12vh;
+/* Cinematic bars */
+.cinema-bars{position:fixed;inset:0;pointer-events:none;z-index:60}
+.cinema-bars::before,.cinema-bars::after{
+  content:"";position:absolute;left:0;right:0;height:12vh;
   background:linear-gradient(to bottom, rgba(0,0,0,.95), rgba(0,0,0,0));
-  opacity:0;
-  transform:translateY(-10px);
-  animation:barsIn 2.4s ease .3s forwards;
+  opacity:.42;
 }
 .cinema-bars::before{top:0}
-.cinema-bars::after{
-  bottom:0;
-  transform:translateY(10px) rotate(180deg);
-  animation-delay:.45s;
-}
-@keyframes barsIn{
-  to{opacity:.42; transform:translateY(0)}
-}
+.cinema-bars::after{bottom:0;transform:rotate(180deg)}
 
 /* Intro */
-.intro-overlay{
-  position:fixed; inset:0; z-index:50;
-  display:flex; align-items:center; justify-content:center;
-  overflow:hidden; background:#000;
-}
-.intro-video{
-  position:absolute; inset:0;
-  width:100%; height:100%;
-  object-fit:cover;
-  transform:scale(1.03);
-}
-.intro-shade{
-  position:absolute; inset:0;
-  background:linear-gradient(to bottom, rgba(0,0,0,.30), rgba(0,0,0,.78));
-}
+.intro-overlay{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#000}
+.intro-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.03)}
+.intro-shade{position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,.30), rgba(0,0,0,.78))}
+.intro-content{position:relative;text-align:center;padding:2rem;color:#fff;max-width:900px}
 
-/* blur -> sharp */
 .intro-soft{
   filter: blur(10px) contrast(1.05) saturate(1.10);
   opacity:.92;
   transition: filter 2.0s ease, opacity 2.0s ease;
 }
-.intro-sharp{
-  filter: blur(0) contrast(1.05) saturate(1.10);
-  opacity:1;
-}
+.intro-sharp{filter: blur(0) contrast(1.05) saturate(1.10); opacity:1;}
 
-.intro-content{
-  position:relative;
-  text-align:center;
-  padding:2rem;
-  color:#fff;
-  max-width:900px;
-}
-
-.netflix-wrap{
-  position:relative;
-  display:inline-block;
-  padding:1.4rem 1.2rem;
-  border-radius:18px;
-}
+.netflix-wrap{position:relative;display:inline-block;padding:1.4rem 1.2rem;border-radius:18px}
 .netflix-logo{
-  font-weight:600;
-  letter-spacing:.18em;
-  text-transform:uppercase;
-  font-size:2.2rem;
-  opacity:0;
-  transform: translateY(10px) scale(.98);
-  animation: logoIn 1.2s ease forwards;
+  font-weight:600;letter-spacing:.18em;text-transform:uppercase;font-size:2.2rem;
+  opacity:0;transform:translateY(10px) scale(.98);animation:logoIn 1.2s ease forwards
 }
-@keyframes logoIn{to{opacity:1; transform:translateY(0) scale(1)}}
-
+@keyframes logoIn{to{opacity:1;transform:translateY(0) scale(1)}}
 .light-sweep{
-  position:absolute; top:0; bottom:0;
-  width:120px; left:-140px;
+  position:absolute;top:0;bottom:0;width:120px;left:-140px;
   background:linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,.28), rgba(255,255,255,0));
-  transform:skewX(-18deg);
-  animation:sweep 2.8s ease-in-out .6s forwards;
-  opacity:.65;
+  transform:skewX(-18deg);animation:sweep 2.8s ease-in-out .6s forwards;opacity:.65
 }
 @keyframes sweep{
-  0%{left:-160px; opacity:0}
+  0%{left:-160px;opacity:0}
   25%{opacity:.65}
-  100%{left:calc(100% + 160px); opacity:0}
+  100%{left:calc(100% + 160px);opacity:0}
 }
+.intro-sub{margin-top:.75rem;font-size:1.05rem;opacity:.92;letter-spacing:.08em;text-transform:lowercase}
+.name-reveal{margin-top:1.1rem;font-size:1.1rem}
+.name-reveal span{font-family:'Great Vibes',cursive;font-size:2rem;padding-left:.25rem}
+.tap-hint{margin-top:1rem;font-size:.95rem;opacity:.75}
 
-.intro-sub{
-  margin-top:.75rem;
-  font-size:1.05rem;
-  opacity:.92;
-  letter-spacing:.08em;
-  text-transform:lowercase;
-}
-
-.name-reveal{
-  margin-top:1.1rem;
-  font-size:1.1rem;
-}
-.name-reveal span{
-  font-family:'Great Vibes', cursive;
-  font-size:2.0rem;
-  padding-left:.25rem;
-}
-
-.tap-hint{
-  margin-top:1rem;
-  font-size:.95rem;
-  opacity:.75;
-}
-
-/* fade up lines */
-.intro-fade{
-  opacity:0;
-  transform:translateY(10px);
-  animation: fadeUp 1.2s ease forwards;
-}
-.intro-fade:nth-of-type(1){animation-delay:.35s}
-.intro-fade:nth-of-type(2){animation-delay:.55s}
-.intro-fade:nth-of-type(3){animation-delay:.75s}
-.intro-fade:nth-of-type(4){animation-delay:.95s}
-@keyframes fadeUp{to{opacity:1; transform:translateY(0)}}
-
-.btn{
-  margin-top:1.2rem;
-  border:none;
-  padding:.95rem 1.25rem;
-  border-radius:999px;
-  cursor:pointer;
-  font-weight:600;
-  background:#fff;
-  color:#2d2d2d;
-  box-shadow:0 10px 30px rgba(0,0,0,.18);
-}
-.btn.soft{background:#fce4ec}
-.btn:active{transform:scale(.98)}
-
-/* Pages (no rushing) */
+/* Pages */
 .page{
   min-height:100vh;
   display:none;
@@ -168,20 +69,19 @@ body{font-family:'Playfair Display',serif;background:#f9f6f4;overflow-x:hidden;c
 }
 .page.active{display:flex}
 
-.soft-title{
-  font-family:'Great Vibes', cursive;
-  font-size:4rem;
-  color:#b76e79;
-}
+.soft-title{font-family:'Great Vibes',cursive;font-size:4rem;color:#b76e79}
 
-.cineline{
-  margin-top:1.2rem;
-  max-width:860px;
-  display:flex;
-  flex-direction:column;
-  gap:.7rem;
+.cineline{margin-top:1.2rem;max-width:860px;display:flex;flex-direction:column;gap:.7rem}
+.cue{
+  font-size:1.2rem;
+  opacity:0;
+  transform:translateY(8px);
+  filter:blur(2px);
+  transition:opacity .8s ease, transform .8s ease, filter .8s ease;
 }
-.cue{font-size:1.2rem;opacity:.95}
+.cue.show{opacity:1;transform:translateY(0);filter:blur(0)}
+
+.small-hint{margin-top:1.4rem;font-size:.95rem;opacity:.7;letter-spacing:.08em;text-transform:lowercase}
 
 /* Beat pulse */
 .beat.pulse{animation:beatPulse .22s ease}
@@ -190,7 +90,13 @@ body{font-family:'Playfair Display',serif;background:#f9f6f4;overflow-x:hidden;c
 .section-title{font-size:2rem;margin:0 auto 1.2rem;color:#b76e79}
 .caption{margin-top:.5rem;font-size:1.05rem;opacity:.9}
 
-/* Surprise bouquet polish */
+.btn{
+  margin-top:1.2rem;border:none;padding:.95rem 1.25rem;border-radius:999px;cursor:pointer;font-weight:600;
+  background:#fff;color:#2d2d2d;box-shadow:0 10px 30px rgba(0,0,0,.18)
+}
+.btn:active{transform:scale(.98)}
+
+/* Bouquet */
 .surprise{margin-top:2rem}
 .bouquet-frame{
   position:relative;
@@ -213,11 +119,7 @@ body{font-family:'Playfair Display',serif;background:#f9f6f4;overflow-x:hidden;c
   opacity:.65;
 }
 
-.flowers-text{
-  margin-top:1.4rem;
-  font-size:1.1rem;
-  line-height:1.55;
-}
+.flowers-text{margin-top:1.4rem;font-size:1.1rem;line-height:1.55}
 
 /* Final */
 .final-title{font-family:'Great Vibes',cursive;font-size:3.8rem;color:#b76e79}
@@ -225,32 +127,16 @@ body{font-family:'Playfair Display',serif;background:#f9f6f4;overflow-x:hidden;c
 .final-text{margin-top:1.2rem;font-size:1.1rem;opacity:.95}
 
 .whisper{
-  margin:2.2rem auto 0;
-  font-size:1.35rem;
-  letter-spacing:.14em;
-  text-transform:lowercase;
-  opacity:0;
-  filter: blur(4px);
-  transform: translateY(10px);
+  margin:2.2rem auto 0;font-size:1.35rem;letter-spacing:.14em;text-transform:lowercase;
+  opacity:0;filter: blur(4px);transform: translateY(10px);
   transition: opacity 2.2s ease, filter 2.2s ease, transform 2.2s ease;
 }
-.whisper.show{
-  opacity:.85;
-  filter: blur(0);
-  transform: translateY(0);
-}
-
-/* Fade-out intro overlay */
-.fade-out{animation:fadeOut .9s ease forwards}
-@keyframes fadeOut{to{opacity:0; transform:scale(1.02)}}
+.whisper.show{opacity:.85;filter: blur(0);transform: translateY(0)}
 
 /* Petals */
-.petal{
-  position:fixed;
-  z-index:-1;
-  pointer-events:none;
-  animation:fall linear infinite;
-}
-@keyframes fall{
-  to{ transform:translateY(140vh) rotate(360deg); }
-}
+.petal{position:fixed;z-index:-1;pointer-events:none;animation:fall linear infinite}
+@keyframes fall{to{transform:translateY(140vh) rotate(360deg)}}
+
+/* Fade out intro overlay */
+.fade-out{animation:fadeOut .9s ease forwards}
+@keyframes fadeOut{to{opacity:0; transform:scale(1.02)}}
