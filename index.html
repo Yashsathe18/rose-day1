@@ -14,10 +14,10 @@
 
   <audio id="bgMusic" src="./assets/music.mp3" preload="auto" loop></audio>
 
-  <!-- INTRO (autoplays, then auto transitions) -->
+  <!-- INTRO OVERLAY -->
   <div class="intro-overlay" id="introOverlay">
     <video
-      class="intro-video intro-soft"
+      class="intro-video"
       id="introVideo"
       src="./assets/intro.mp4"
       muted
@@ -28,31 +28,30 @@
 
     <div class="intro-shade"></div>
 
-    <div class="intro-content">
-      <div class="netflix-wrap">
-        <div class="netflix-logo">
-          <span>A</span><span>&nbsp;</span><span>L</span><span>I</span><span>T</span><span>T</span><span>L</span><span>E</span>
-          <span>&nbsp;&nbsp;</span>
-          <span>S</span><span>T</span><span>O</span><span>R</span><span>Y</span>
-        </div>
-        <div class="light-sweep"></div>
-      </div>
+    <!-- Netflix trailer style title card -->
+    <div class="trailer-card" id="trailerCard">
+      <div class="n-mark"></div>
+      <div class="trailer-title">A LITTLE STORY</div>
+      <div class="trailer-sub">a romantic trailer</div>
+      <div class="trailer-line"></div>
+    </div>
 
-      <div class="intro-sub">made with all my heart.</div>
+    <div class="intro-content" id="introContent">
+      <div class="intro-sub beat">made with all my heart.</div>
 
       <div class="name-reveal">
         for <span id="herName">Her</span>
       </div>
 
-      <div class="tap-hint" id="tapHint">tap anywhere to start the music 🎧</div>
+      <button type="button" class="btn" id="beginBtn">Tap to Begin</button>
+      <div class="hint">Turn volume up 🎧 (music starts after tap)</div>
     </div>
   </div>
 
   <!-- MAIN -->
   <main id="mainContent" class="hidden">
 
-    <!-- PAGE 1: TEXT (same feel as first one) -->
-    <section class="page active" id="page1">
+    <section class="hero" id="heroTop">
       <h1 class="soft-title">For the most beautiful soul</h1>
 
       <div class="cineline">
@@ -62,41 +61,39 @@
         <div class="cue beat" data-cue="4">feel like home.</div>
       </div>
 
-      <div class="small-hint">just watch…</div>
+      <button type="button" class="btn soft" id="continueBtn">Continue</button>
     </section>
 
-    <!-- PAGE 2: TAP TO REVEAL -->
-    <section class="page" id="page2">
+    <!-- SURPRISE -->
+    <section class="bouquet-section" id="bouquetSection">
       <h2 class="section-title">One last thing…</h2>
-      <p class="caption">Tap reveal when you’re ready.</p>
+      <p class="caption">When you’re ready, tap it.</p>
 
       <button type="button" class="btn" id="surpriseBtn">Reveal Surprise ✨</button>
 
       <div class="surprise hidden" id="surpriseBox">
-        <div class="bouquet-frame">
-          <video
-            class="bouquet-video"
-            id="bouquetVideo"
-            src="./assets/bouquet.mp4"
-            muted
-            playsinline
-            preload="auto"
-          ></video>
-          <div class="bouquet-glow"></div>
-        </div>
+        <video
+          class="bouquet-video"
+          id="bouquetVideo"
+          src="./assets/bouquet.mp4"
+          muted
+          loop
+          playsinline
+          preload="auto"
+        ></video>
 
         <p class="flowers-text beat">
-          No red roses —<br>
+          Not red roses —<br>
           only lilies, baby’s breath, and soft blooms…<br>
           rich, elegant, and made for you.
         </p>
       </div>
     </section>
 
-    <!-- PAGE 3: FINAL -->
-    <section class="page" id="page3">
-      <h2 class="final-title">Happy Rose Day</h2>
-      <h3 class="final-sub">Baby Girl 🌸</h3>
+    <!-- FINAL -->
+    <section class="final" id="finalSection">
+      <h2>Happy Rose Day</h2>
+      <h3>Baby Girl 🌸</h3>
 
       <p class="final-text">
         In a world full of ordinary flowers,<br>
