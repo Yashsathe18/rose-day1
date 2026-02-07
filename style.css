@@ -81,9 +81,7 @@ body{font-family:'Playfair Display',serif;background:#f9f6f4;overflow-x:hidden;c
 }
 .btn.soft{background:#fce4ec}
 .btn:active{transform:scale(.98)}
-
-/* NEW: spacing for next button */
-#nextBtn{ margin-top:1.6rem; }
+#nextBtn{margin-top:1.6rem}
 
 /* Main hero */
 .hero{
@@ -127,25 +125,26 @@ body{font-family:'Playfair Display',serif;background:#f9f6f4;overflow-x:hidden;c
 .final h2{font-family:'Great Vibes',cursive;font-size:3.6rem;color:#b76e79}
 .final h3{font-size:2rem;margin-top:.8rem}
 .final-text{margin-top:1.2rem;font-size:1.1rem;opacity:.95}
+
+/* FINAL I LOVE YOU ANIMATION */
 .whisper{
-  margin:2.4rem auto 0;
-  font-size:1.5rem;
-  letter-spacing:.18em;
+  margin:2.6rem auto 0;
+  font-size:1.6rem;
+  letter-spacing:.22em;
   text-transform:lowercase;
   opacity:0;
-  filter:blur(6px);
-  transform:translateY(18px) scale(0.98);
+  filter:blur(10px);
+  transform:translateY(26px) scale(0.95);
   transition:
-    opacity 1.6s ease,
-    filter 1.6s ease,
-    transform 1.6s cubic-bezier(.19,1,.22,1);
+    opacity 1.8s ease,
+    filter 1.8s ease,
+    transform 1.8s cubic-bezier(.19,1,.22,1);
 }
 .whisper.show{
-  opacity:.9;
+  opacity:1;
   filter:blur(0);
   transform:translateY(0) scale(1);
 }
-
 
 /* Fade out intro overlay */
 .fade-out{animation:fadeOut .85s ease forwards}
