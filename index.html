@@ -9,6 +9,7 @@
 </head>
 <body>
 
+  <!-- Animated cinematic bars -->
   <div class="cinema-bars" aria-hidden="true"></div>
   <div class="bloom-bg"></div>
 
@@ -17,7 +18,7 @@
   <!-- INTRO OVERLAY -->
   <div class="intro-overlay" id="introOverlay">
     <video
-      class="intro-video"
+      class="intro-video intro-soft"
       id="introVideo"
       src="./assets/intro.mp4"
       muted
@@ -38,25 +39,25 @@
         <div class="light-sweep"></div>
       </div>
 
-      <div class="intro-sub beat">made with all my heart.</div>
+      <div class="intro-sub intro-fade">made with all my heart.</div>
 
-      <div class="name-reveal">
+      <div class="name-reveal intro-fade">
         for <span id="herName">Her</span>
       </div>
 
-     <button type="button" class="btn" id="beginBtn">Tap to Begin</button>
-      <div class="hint">Music starts after tap 🎧</div>
-    </div>
+      <div class="tap-hint intro-fade" id="tapHint">
+        tap anywhere to start the music 🎧
+      </div>
 
-    <!-- DEBUG BADGE -->
-    <div id="vidDebug" class="vid-debug">intro: ready (tap Begin)</div>
+      <button type="button" class="btn intro-fade" id="beginBtn">Begin</button>
+    </div>
   </div>
 
   <!-- MAIN -->
   <main id="mainContent" class="hidden">
 
     <!-- PAGE 1 -->
-    <section class="page hero-page active" id="page1">
+    <section class="page active" id="page1">
       <h1 class="soft-title">For the most beautiful soul</h1>
 
       <div class="cineline">
@@ -66,43 +67,42 @@
         <div class="cue beat show">feel like home.</div>
       </div>
 
-      <button class="btn soft" id="toPage2">Next</button>
+      <button type="button" class="btn soft" id="toPage2">Next</button>
     </section>
 
     <!-- PAGE 2 -->
-    <section class="page bouquet-page" id="page2">
+    <section class="page" id="page2">
       <h2 class="section-title">One last thing…</h2>
-      <p class="caption">When you’re ready, tap the reveal.</p>
+      <p class="caption">When you’re ready, tap reveal.</p>
 
-      <button class="btn" id="surpriseBtn">Reveal Surprise ✨</button>
+      <button type="button" class="btn" id="surpriseBtn">Reveal Surprise ✨</button>
 
       <div class="surprise hidden" id="surpriseBox">
-        <video
-          class="bouquet-video"
-          id="bouquetVideo"
-          src="./assets/bouquet.mp4"
-          muted
-          loop
-          playsinline
-          preload="auto"
-        ></video>
-
-        <div class="bouquet-fallback hidden" id="bouquetFallback">
-          Bouquet video didn’t play. Re-encode to MP4 H.264 (x264).
+        <div class="bouquet-frame">
+          <video
+            class="bouquet-video"
+            id="bouquetVideo"
+            src="./assets/bouquet.mp4"
+            muted
+            loop
+            playsinline
+            preload="auto"
+          ></video>
+          <div class="bouquet-glow"></div>
         </div>
 
         <p class="flowers-text beat">
           No red roses —<br>
-          only lilies, baby’s breath, and soft blooms…<br>
+          lilies, baby’s breath, and soft blooms…<br>
           rich, elegant, and made for you.
         </p>
 
-        <button class="btn soft" id="toPage3">Next</button>
+        <button type="button" class="btn soft" id="toPage3">Next</button>
       </div>
     </section>
 
     <!-- PAGE 3 -->
-    <section class="page final-page" id="page3">
+    <section class="page" id="page3">
       <h2 class="final-title">Happy Rose Day</h2>
       <h3 class="final-sub">Baby Girl 🌸</h3>
 
