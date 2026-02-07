@@ -17,12 +17,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const surpriseBtn  = document.getElementById("surpriseBtn");
   const surpriseBox  = document.getElementById("surpriseBox");
   const bouquetVideo = document.getElementById("bouquetVideo");
+  const nextBtn      = document.getElementById("nextBtn");
+
   const whisper      = document.getElementById("whisper");
 
   const herNameEl = document.getElementById("herName");
   if (herNameEl) herNameEl.textContent = HER_NAME;
 
-  // Autoplay intro video muted (allowed)
+  // Autoplay intro video muted
   if (introVideo) {
     introVideo.muted = true;
     introVideo.loop = true;
@@ -30,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
     introVideo.play().catch(()=>{});
   }
 
-  // Show Begin UI after trailer card ends, with safe fallback
+  // Show Begin UI after trailer card ends (or fallback)
   if (introContent) {
     const fallback = setTimeout(() => introContent.classList.add("show"), 3200);
     if (trailerCard) {
@@ -56,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, intervalMs);
   }
 
-  // Cue timeline like original
+  // Cue timeline
   function startCueTimeline(){
     const cues = document.querySelectorAll(".cue[data-cue]");
     const schedule = [
@@ -68,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
     schedule.forEach(s => setTimeout(() => cues[s.i]?.classList.add("show"), s.t * 1000));
   }
 
-  // Music fade in after tap
+  // Music fade-in
   async function playMusicCinematic(){
     if (!music) return;
     try {
@@ -84,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch(e) {}
   }
 
-  // Begin -> show main + start cues
+  // Begin
   beginBtn.addEventListener("click", async () => {
     await playMusicCinematic();
     startBeatPulse();
@@ -112,8 +114,16 @@ document.addEventListener("DOMContentLoaded", () => {
       bouquetVideo.currentTime = 0;
       bouquetVideo.play().catch(()=>{});
     }
+    // whisper shows softly (even if they scroll later)
     setTimeout(() => whisper.classList.add("show"), 2400);
   });
+
+  // NEW: Next button scrolls to final section
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      document.getElementById("finalSection").scrollIntoView({ behavior: "smooth" });
+    });
+  }
 
   // Petals
   for (let i = 0; i < 18; i++) {
