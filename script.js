@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const herNameEl = document.getElementById("herName");
   if (herNameEl) herNameEl.textContent = HER_NAME;
 
-  // Autoplay intro video (muted) in background
+  // Autoplay intro video muted (allowed)
   if (introVideo) {
     introVideo.muted = true;
     introVideo.loop = true;
@@ -30,10 +30,9 @@ document.addEventListener("DOMContentLoaded", () => {
     introVideo.play().catch(()=>{});
   }
 
-  // Show Begin UI after the trailer card finishes (animationend), fallback safe
+  // Show Begin UI after trailer card ends, with safe fallback
   if (introContent) {
     const fallback = setTimeout(() => introContent.classList.add("show"), 3200);
-
     if (trailerCard) {
       trailerCard.addEventListener("animationend", (e) => {
         if (e.animationName === "trailerOut") {
@@ -57,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, intervalMs);
   }
 
-  // Cue timeline
+  // Cue timeline like original
   function startCueTimeline(){
     const cues = document.querySelectorAll(".cue[data-cue]");
     const schedule = [
@@ -69,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
     schedule.forEach(s => setTimeout(() => cues[s.i]?.classList.add("show"), s.t * 1000));
   }
 
-  // Music fade-in on tap
+  // Music fade in after tap
   async function playMusicCinematic(){
     if (!music) return;
     try {
@@ -85,44 +84,36 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch(e) {}
   }
 
-  // Begin: start music + show main, no extra delays
-  if (beginBtn) {
-    beginBtn.addEventListener("click", async () => {
-      await playMusicCinematic();
-      startBeatPulse();
+  // Begin -> show main + start cues
+  beginBtn.addEventListener("click", async () => {
+    await playMusicCinematic();
+    startBeatPulse();
 
-      if (introOverlay) introOverlay.classList.add("fade-out");
-      setTimeout(() => {
-        if (introOverlay) introOverlay.style.display = "none";
-        if (mainContent) mainContent.classList.remove("hidden");
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        startCueTimeline();
-      }, 900);
-    });
-  }
+    introOverlay.classList.add("fade-out");
+    setTimeout(() => {
+      introOverlay.style.display = "none";
+      mainContent.classList.remove("hidden");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      startCueTimeline();
+    }, 900);
+  });
 
-  // Continue scroll
-  if (continueBtn) {
-    continueBtn.addEventListener("click", () => {
-      document.getElementById("bouquetSection")?.scrollIntoView({ behavior: "smooth" });
-    });
-  }
+  // Continue scrolls to bouquet
+  continueBtn.addEventListener("click", () => {
+    document.getElementById("bouquetSection").scrollIntoView({ behavior: "smooth" });
+  });
 
   // Reveal bouquet + autoplay
-  if (surpriseBtn) {
-    surpriseBtn.addEventListener("click", () => {
-      if (surpriseBox) surpriseBox.classList.remove("hidden");
-
-      if (bouquetVideo) {
-        bouquetVideo.muted = true;
-        bouquetVideo.loop = true;
-        bouquetVideo.currentTime = 0;
-        bouquetVideo.play().catch(()=>{});
-      }
-
-      if (whisper) setTimeout(() => whisper.classList.add("show"), 2400);
-    });
-  }
+  surpriseBtn.addEventListener("click", () => {
+    surpriseBox.classList.remove("hidden");
+    if (bouquetVideo) {
+      bouquetVideo.muted = true;
+      bouquetVideo.loop = true;
+      bouquetVideo.currentTime = 0;
+      bouquetVideo.play().catch(()=>{});
+    }
+    setTimeout(() => whisper.classList.add("show"), 2400);
+  });
 
   // Petals
   for (let i = 0; i < 18; i++) {
