@@ -27,26 +27,21 @@ const whisper = document.getElementById("whisper");
 
 function setDebug(msg){ if (vidDebug) vidDebug.textContent = msg; }
 
-// Intro video debug
-window.addEventListener("load", async () => {
-  setDebug("intro: loading… " + introVideo.currentSrc);
+// Show real video error code
+window.addEventListener("load", () => {
+  if (!introVideo) return;
 
-  introVideo.addEventListener("loadedmetadata", () =>
-    setDebug(`intro: metadata ✅ (${introVideo.videoWidth}x${introVideo.videoHeight})`)
-  );
-  introVideo.addEventListener("playing", () => setDebug("intro: playing ✅"));
   introVideo.addEventListener("error", () => {
-    const code = introVideo.error?.code; // 2=network 3=decode 4=src
+    const code = introVideo.error?.code;
+    // 1=ABORTED 2=NETWORK 3=DECODE 4=SRC_NOT_SUPPORTED
     setDebug("intro: ERROR ❌ code=" + code + " (2=network,3=decode,4=src)");
   });
 
-  // Try muted autoplay
-  try {
-    introVideo.muted = true;
-    await introVideo.play();
-  } catch (e) {
-    setDebug("intro: autoplay blocked (tap Begin) ❗");
-  }
+  introVideo.addEventListener("loadedmetadata", () => {
+    setDebug(`intro: metadata ✅ (${introVideo.videoWidth}x${introVideo.videoHeight})`);
+  });
+
+  setDebug("intro: ready (tap Begin)");
 });
 
 // Beat pulse
@@ -77,7 +72,7 @@ async function playMusicCinematic(){
   } catch(e) {}
 }
 
-// Page switcher
+// Page switcher (no rushing)
 function showPage(n){
   [page1, page2, page3].forEach(p => p.classList.remove("active"));
   if (n === 1) page1.classList.add("active");
@@ -86,9 +81,17 @@ function showPage(n){
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-// Begin
+// Begin: start video after tap + music
 beginBtn.addEventListener("click", async () => {
-  try { introVideo.muted = true; await introVideo.play(); } catch(e) {}
+  try {
+    introVideo.muted = true;
+    introVideo.currentTime = 0;
+    await introVideo.play();
+    setDebug("intro: playing ✅");
+  } catch (e) {
+    // If it fails, the error listener will show the code
+  }
+
   await playMusicCinematic();
   startBeatPulse();
 
@@ -100,13 +103,13 @@ beginBtn.addEventListener("click", async () => {
   }, 900);
 });
 
-// Next buttons (NO rushing)
+// Next buttons (user controls pace)
 toPage2.addEventListener("click", () => showPage(2));
 
 surpriseBtn.addEventListener("click", () => {
   surpriseBox.classList.remove("hidden");
 
-  // Attempt bouquet video
+  // Try bouquet video after a user gesture
   if (bouquetVideo) {
     bouquetVideo.addEventListener("error", () => {
       if (bouquetFallback) bouquetFallback.classList.remove("hidden");
