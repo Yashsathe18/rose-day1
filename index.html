@@ -1,110 +1,151 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Rose Day — For Her</title>
-  <link rel="stylesheet" href="./style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Great+Vibes&display=swap" rel="stylesheet">
-</head>
-<body>
+// ====== EDIT THESE ======
+const HER_NAME = "Baby Girl"; // change this
+const BPM = 78;
+// ========================
 
-  <div class="cinema-bars" aria-hidden="true"></div>
-  <div class="bloom-bg"></div>
+window.addEventListener("load", () => {
+  // Grab elements safely
+  const introOverlay = document.getElementById("introOverlay");
+  const introVideo   = document.getElementById("introVideo");
+  const introContent = document.getElementById("introContent");
+  const trailerCard  = document.getElementById("trailerCard");
 
-  <audio id="bgMusic" src="./assets/music.mp3" preload="auto" loop></audio>
+  const beginBtn     = document.getElementById("beginBtn");
+  const mainContent  = document.getElementById("mainContent");
+  const music        = document.getElementById("bgMusic");
 
-  <!-- INTRO OVERLAY -->
-  <div class="intro-overlay" id="introOverlay">
-    <video
-      class="intro-video"
-      id="introVideo"
-      src="./assets/intro.mp4"
-      muted
-      loop
-      playsinline
-      preload="auto"
-    ></video>
+  const continueBtn  = document.getElementById("continueBtn");
+  const surpriseBtn  = document.getElementById("surpriseBtn");
+  const surpriseBox  = document.getElementById("surpriseBox");
+  const bouquetVideo = document.getElementById("bouquetVideo");
+  const whisper      = document.getElementById("whisper");
 
-    <div class="intro-shade"></div>
+  const herNameEl = document.getElementById("herName");
+  if (herNameEl) herNameEl.textContent = HER_NAME;
 
-    <!-- Netflix trailer style title card -->
-    <div class="trailer-card" id="trailerCard">
-      <div class="n-mark"></div>
-      <div class="trailer-title">A LITTLE STORY</div>
-      <div class="trailer-sub">a romantic trailer</div>
-      <div class="trailer-line"></div>
-    </div>
+  // ---------- Autoplay intro video (muted) ----------
+  if (introVideo) {
+    introVideo.muted = true;
+    introVideo.loop = true;
+    introVideo.playsInline = true;
+    introVideo.play().catch(() => {
+      // If autoplay is blocked, it will still show the video poster/first frame.
+      // Begin button still works.
+    });
+  }
 
-    <div class="intro-content" id="introContent">
-      <div class="intro-sub beat">made with all my heart.</div>
+  // ---------- Show Begin UI after trailer animation ends ----------
+  // Preferred: listen for animation end of trailerCard
+  if (trailerCard && introContent) {
+    // If animationend never fires (rare), fallback after 3.5s
+    const fallback = setTimeout(() => introContent.classList.add("show"), 3500);
 
-      <div class="name-reveal">
-        for <span id="herName">Her</span>
-      </div>
+    trailerCard.addEventListener("animationend", (e) => {
+      // Trailer has 2 animations: trailerIn + trailerOut.
+      // We show Begin after trailerOut completes.
+      if (e.animationName === "trailerOut") {
+        clearTimeout(fallback);
+        introContent.classList.add("show");
+      }
+    });
+  } else if (introContent) {
+    // If trailerCard missing, just show begin UI immediately
+    introContent.classList.add("show");
+  }
 
-      <button type="button" class="btn" id="beginBtn">Tap to Begin</button>
-      <div class="hint">Turn volume up 🎧 (music starts after tap)</div>
-    </div>
-  </div>
+  // ---------- Beat pulse ----------
+  function startBeatPulse(){
+    const intervalMs = Math.round((60 / BPM) * 1000);
+    const beatEls = document.querySelectorAll(".beat");
+    setInterval(() => {
+      beatEls.forEach(el => {
+        el.classList.remove("pulse");
+        void el.offsetWidth;
+        el.classList.add("pulse");
+      });
+    }, intervalMs);
+  }
 
-  <!-- MAIN -->
-  <main id="mainContent" class="hidden">
+  // ---------- Cue timeline (like original) ----------
+  function startCueTimeline(){
+    const cues = document.querySelectorAll(".cue[data-cue]");
+    const schedule = [
+      { t: 0.8, i: 0 },
+      { t: 2.4, i: 1 },
+      { t: 4.0, i: 2 },
+      { t: 5.2, i: 3 },
+    ];
+    schedule.forEach(s => setTimeout(() => cues[s.i]?.classList.add("show"), s.t * 1000));
+  }
 
-    <section class="hero" id="heroTop">
-      <h1 class="soft-title">For the most beautiful soul</h1>
+  // ---------- Music starts after tap ----------
+  async function playMusicCinematic(){
+    if (!music) return;
+    try {
+      music.volume = 0;
+      await music.play();
+      let v = 0;
+      const target = 0.65;
+      const fade = setInterval(() => {
+        v += 0.02;
+        music.volume = Math.min(v, target);
+        if (v >= target) clearInterval(fade);
+      }, 120);
+    } catch(e) {}
+  }
 
-      <div class="cineline">
-        <div class="cue beat" data-cue="1">Some places feel like cinema.</div>
-        <div class="cue beat" data-cue="2">Some moments feel like forever.</div>
-        <div class="cue beat" data-cue="3">And you…</div>
-        <div class="cue beat" data-cue="4">feel like home.</div>
-      </div>
+  // ---------- Begin ----------
+  if (beginBtn) {
+    beginBtn.addEventListener("click", async () => {
+      await playMusicCinematic();
+      startBeatPulse();
 
-      <button type="button" class="btn soft" id="continueBtn">Continue</button>
-    </section>
+      if (introOverlay) introOverlay.classList.add("fade-out");
 
-    <!-- SURPRISE -->
-    <section class="bouquet-section" id="bouquetSection">
-      <h2 class="section-title">One last thing…</h2>
-      <p class="caption">When you’re ready, tap it.</p>
+      setTimeout(() => {
+        if (introOverlay) introOverlay.style.display = "none";
+        if (mainContent) mainContent.classList.remove("hidden");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        startCueTimeline();
+      }, 900);
+    });
+  }
 
-      <button type="button" class="btn" id="surpriseBtn">Reveal Surprise ✨</button>
+  // ---------- Continue scroll ----------
+  if (continueBtn) {
+    continueBtn.addEventListener("click", () => {
+      document.getElementById("bouquetSection")?.scrollIntoView({ behavior: "smooth" });
+    });
+  }
 
-      <div class="surprise hidden" id="surpriseBox">
-        <video
-          class="bouquet-video"
-          id="bouquetVideo"
-          src="./assets/bouquet.mp4"
-          muted
-          loop
-          playsinline
-          preload="auto"
-        ></video>
+  // ---------- Reveal bouquet + autoplay ----------
+  if (surpriseBtn) {
+    surpriseBtn.addEventListener("click", () => {
+      if (surpriseBox) surpriseBox.classList.remove("hidden");
 
-        <p class="flowers-text beat">
-          Not red roses —<br>
-          only lilies, baby’s breath, and soft blooms…<br>
-          rich, elegant, and made for you.
-        </p>
-      </div>
-    </section>
+      if (bouquetVideo) {
+        bouquetVideo.muted = true;
+        bouquetVideo.loop = true;
+        bouquetVideo.currentTime = 0;
+        bouquetVideo.play().catch(()=>{});
+      }
 
-    <!-- FINAL -->
-    <section class="final" id="finalSection">
-      <h2>Happy Rose Day</h2>
-      <h3>Baby Girl 🌸</h3>
+      // Whisper appears (no forced scroll)
+      if (whisper) setTimeout(() => whisper.classList.add("show"), 2400);
+    });
+  }
 
-      <p class="final-text">
-        In a world full of ordinary flowers,<br>
-        you’re the one that feels rare.
-      </p>
-
-      <div class="whisper" id="whisper">i love you.</div>
-    </section>
-
-  </main>
-
-  <script src="./script.js"></script>
-</body>
-</html>
+  // ---------- Petals ----------
+  for (let i = 0; i < 18; i++) {
+    const petal = document.createElement("img");
+    petal.src = "./assets/petal.png";
+    petal.className = "petal";
+    petal.style.left = Math.random() * 100 + "vw";
+    petal.style.top = (-10 - Math.random() * 40) + "vh";
+    petal.style.width = (16 + Math.random() * 22) + "px";
+    petal.style.opacity = (0.25 + Math.random() * 0.55);
+    petal.style.animationDuration = (9 + Math.random() * 6) + "s";
+    petal.style.animationDelay = (Math.random() * 3) + "s";
+    document.body.appendChild(petal);
+  }
+});
